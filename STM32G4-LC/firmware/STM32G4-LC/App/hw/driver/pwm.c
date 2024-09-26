@@ -133,7 +133,7 @@ void cliPwm(cli_args_t *args)
 	uint8_t  ch;
 	uint32_t pwm;
 
-	uint8_t r, g, b;
+	//uint8_t r, g, b;
 
 	if (args->argc == 3)
 	{

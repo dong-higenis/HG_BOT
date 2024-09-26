@@ -74,6 +74,6 @@
 #define      HW_GPIO_MAX_CH         1
 
 #define _USE_HW_PWM
-#define      HW_PWM_MAX_CH          4
+#define      HW_PWM_MAX_CH          2
 
 #endif

@@ -43,6 +43,8 @@ bool hwInit(void)
   //cdcInit();
 
   pwmInit();
+  ws2812Init();
+  servoInit();
 
   return true;
 }

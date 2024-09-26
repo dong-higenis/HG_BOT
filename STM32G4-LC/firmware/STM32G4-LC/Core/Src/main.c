@@ -59,28 +59,6 @@ void mxInit();
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#if 0
-void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
-{
-	if (htim == &htim3){
-		cliPrintf("htim3\n");
-		HAL_TIM_PWM_Stop_DMA(htim, TIM_CHANNEL_2);
-	}
-	else if (htim == &htim2){
-		cliPrintf("htim2\n");
-		HAL_TIM_PWM_Stop_DMA(htim, TIM_CHANNEL_1);
-	}
-	else if (htim == &htim16){
-		cliPrintf("htim16\n");
-		HAL_TIM_PWM_Stop_DMA(htim, TIM_CHANNEL_1);
-	}
-	else if (htim == &htim17){
-		cliPrintf("htim17\n");
-		HAL_TIM_PWM_Stop_DMA(htim, TIM_CHANNEL_1);
-	}
-}
-
-#endif
 
 /* USER CODE END 0 */
 

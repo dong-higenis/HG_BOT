@@ -24,6 +24,7 @@ extern "C" {
 #include "fram.h"
 //
 #include "ws2812.h"
+#include "servo.h"
 
 bool hwInit(void);
 
