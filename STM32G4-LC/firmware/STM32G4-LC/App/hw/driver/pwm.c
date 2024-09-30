@@ -51,8 +51,8 @@ bool pwmInit(void)
 	    pwm_tbl[i].max_value = 65535;
 	}
 
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+	//HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+	//HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 	//HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
 	//HAL_TIM_PWM_Start(&htim17, TIM_CHANNEL_1);
 

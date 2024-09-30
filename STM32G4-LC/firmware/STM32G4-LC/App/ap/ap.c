@@ -11,9 +11,11 @@ void apInit (void)
 void apMain (void)
 {
 	uint32_t pre_time;
+	uint32_t servo_time;
 	//uint32_t led_case = 0;
 
 	pre_time = millis ();
+	servo_time = millis ();
 	while (1)
 	{
 		if (millis () - pre_time >= 500)
@@ -44,6 +46,14 @@ void apMain (void)
 			}
 #endif
 		}
+
+		//	servo motor continue
+		if (millis () - servo_time >= 500)
+		{
+			servo_time = millis ();
+			servoSetContinue();
+		}
+
 		cliMain();
 	}
 }
