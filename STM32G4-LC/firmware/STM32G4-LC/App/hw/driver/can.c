@@ -856,7 +856,7 @@ void canAutoOpen(void)
   cliPrintf("canOpen() : %s\n", can_ret ? "True":"False");
   canInfoPrint(_DEF_CAN1);
 }
-
+//
 void canAutoRead(void)
 {
   uint32_t index = 0;
