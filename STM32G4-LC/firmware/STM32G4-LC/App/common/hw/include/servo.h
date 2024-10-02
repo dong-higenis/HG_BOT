@@ -12,7 +12,7 @@
 
 bool servoInit(void);
 void servoBegin(void);
-void servoSet(uint32_t ch, uint8_t speed, int16_t angle);
+void servoSet(uint32_t ch, int16_t angle);
 void servoSetContinue(void);
 uint32_t calAngleToRegval(int16_t angle);
 int16_t calRegvalToAngle(uint32_t register_data);

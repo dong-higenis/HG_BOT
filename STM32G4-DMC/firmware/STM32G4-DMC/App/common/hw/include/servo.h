@@ -1,0 +1,20 @@
+/*
+ * servo.h
+ *
+ *  Created on: Sep 26, 2024
+ *      Author: user
+ */
+
+#ifndef COMMON_HW_INCLUDE_SERVO_H_
+#define COMMON_HW_INCLUDE_SERVO_H_
+
+#include "hw_def.h"
+
+bool servoInit(void);
+void servoBegin(void);
+void servoSet(uint32_t ch, uint8_t speed, int16_t angle);
+void servoSetContinue(void);
+uint32_t calAngleToRegval(int16_t angle);
+int16_t calRegvalToAngle(uint32_t register_data);
+
+#endif /* COMMON_HW_INCLUDE_SERVO_H_ */

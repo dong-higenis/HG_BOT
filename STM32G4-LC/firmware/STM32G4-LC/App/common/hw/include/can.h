@@ -150,6 +150,9 @@ void     canDetachRxInterrupt(uint8_t ch);
 bool     canLock(void);
 bool     canUnLock(void);
 
+void canAutoOpen(void);
+void canAutoRead(void);
+
 #endif
 
 #ifdef __cplusplus

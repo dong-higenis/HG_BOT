@@ -8,13 +8,12 @@
 #include "cli.h"
 #include <math.h>
 
+
 #define ANGLE_0		750
 #define ANGLE_M90	250
 #define ANGLE_90	1250
 
-//
-//	PWM driver struct
-//
+
 typedef struct
 {
 	uint16_t max_value;
@@ -22,6 +21,11 @@ typedef struct
 	uint32_t channel;
 	uint32_t step;
 } servo_pwm_tbl_t;
+
+#ifdef _USE_HW_CLI
+void cliServo(cli_args_t *args);
+#endif
+
 static servo_pwm_tbl_t servo_pwm_tbl[2];
 
 bool servo_init = false;
@@ -29,23 +33,16 @@ bool servo_init = false;
 extern TIM_HandleTypeDef htim2;	//	NeoPixel 0
 extern TIM_HandleTypeDef htim3;	//	NeoPixel 1
 
-//	CLI function
-#ifdef _USE_HW_CLI
-void cliServo(cli_args_t *args);
-#endif
-
 bool servoInit(void)
 {
-	//servo_pwm_tbl[0].max_value = 32000;
-	//servo_pwm_tbl[1].max_value = 32000;
-
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+	servo_init = true;
+
 
 #ifdef _USE_HW_CLI
 	cliAdd("servo", cliServo);
 #endif
-	servo_init = true;
 	return true;
 }
 
@@ -54,7 +51,7 @@ void servoBegin(void)
 
 }
 
-void servoSet(uint32_t ch, uint8_t speed, int16_t angle)
+void servoSet(uint32_t ch, int16_t angle)
 {
 	//float temp_servo_duty_per = (5.0 + ((float)angle * 0.0278));	//	1ms~2ms version
 	float temp_servo_duty_per = (2.5 + ((float)(angle + 90)* 0.0555556));	//	0.5ms~2.5ms version
@@ -116,77 +113,7 @@ int16_t move_1ch_count=0;
 //	Main Thread Operation task
 void servoSetContinue(void)
 {
-	//	get now angle
-	now_0ch_servo_angle = calRegvalToAngle(htim3.Instance->CCR2);
-	now_1ch_servo_angle = calRegvalToAngle(htim2.Instance->CCR1);
-
-	//	control
-	if(action_0ch_command == true)
-	{
-		//	get target reg val
-		target_0ch_val = calAngleToRegval(target_0ch_val);
-		//	now ccr get
-		now_0ch_servo_angle = htim3.Instance->CCR2;
-		//	comparison now vs target
-		if(target_0ch_val != now_0ch_servo_angle)
-		{
-			//	start up
-			if(start_move_0ch_flag == true)
-			{
-				step_0ch_val = (int16_t)((float)(target_0ch_val - now_0ch_servo_angle) / (float)step_0ch_angle);
-				start_move_0ch_flag = false;
-			}
-			// move continue
-			else
-			{
-				//step_0ch_val
-				now_0ch_servo_angle = now_0ch_servo_angle + step_0ch_val;
-				//	서보 모터 오버런 방지
-				//	0' = 750
-				if(target_0ch_val == ANGLE_0)
-				{
-					if(abs(step_0ch_val) > abs(target_0ch_val - now_0ch_servo_angle))
-					{
-						now_0ch_servo_angle = ANGLE_0;
-					}
-				}
-				// -90' = 250
-				if((now_0ch_servo_angle >= ANGLE_M90)&&(now_0ch_servo_angle < ANGLE_0))
-				{
-					//	step 편차로 인한 타겟 오버런
-					if(now_0ch_servo_angle < target_0ch_val )
-					{
-						now_0ch_servo_angle = target_0ch_val;
-					}
-				}
-				else if(now_0ch_servo_angle < ANGLE_M90)
-				{
-					now_0ch_servo_angle = ANGLE_M90;
-				}
-				// 90' = 1250
-				if((now_0ch_servo_angle <= ANGLE_90) && (now_0ch_servo_angle > ANGLE_0))
-				{
-					//	step 편차로 인한 타겟 오버런
-					if(now_0ch_servo_angle > target_0ch_val )
-					{
-						now_0ch_servo_angle = target_0ch_val;
-					}
-				}
-				else if(now_0ch_servo_angle > ANGLE_90)
-				{
-					now_0ch_servo_angle = ANGLE_90;
-				}
-			}
-
-			//now_0ch_servo_angle
-			servoSet(0,0,now_0ch_servo_angle);
-		}
-		else
-		{
-			action_0ch_command == false;
-		}
-
-	}
+  // not use.
 }
 
 #ifdef _USE_HW_CLI
@@ -199,20 +126,19 @@ void cliServo(cli_args_t *args)
 	uint32_t angle;
 	int32_t set_angle;
 
-	//	servo <ch> <speed> <angle>
+	//	servo <ch> <angle>
 	cliPrintf("args->argc = %d\n",args->argc);
-	if (args->argc == 3)
+	if (args->argc == 2)
 	{
 		ch  = (uint8_t)args->getData(0);
-		speed = (uint8_t)args->getData(1);
-		angle = (uint32_t)args->getData(2);
+		angle = (uint32_t)args->getData(1);
 
 		//
-		cliPrintf("ch=%d, speed=%d, angle=%d\n", ch, speed, angle);
-		servoSet(ch, speed, angle);
+		cliPrintf("ch=%d, angle=%d\n", ch, angle);
+		servoSet(ch, angle);
 	}
 	//	servo continue <ch> <speed> <angle>
-	if (args->argc == 3)
+	if (args->argc == 4)
 	{
 		ch  = (uint8_t)args->getData(1);
 		speed = (uint8_t)args->getData(2);

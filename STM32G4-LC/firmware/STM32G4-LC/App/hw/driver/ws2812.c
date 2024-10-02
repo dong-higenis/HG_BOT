@@ -8,11 +8,13 @@
 #include "cli.h"
 
 //	160MHz Clock > 1.3uS
-//	High	0.8us
-//	Low		0.45us
+//	High	0.7us
+//	Low		0.35us
 #define BIT_PERIOD      (207)
 #define BIT_HIGH        (127)
 #define BIT_LOW         (71)
+
+#define DELAY	200	//	200us Reset code value
 
 bool is_init = false;
 
@@ -20,8 +22,6 @@ typedef struct
 {
 	uint16_t led_cnt;
 } ws2812_t;
-
-#define DELAY	200	//	200us Reset code
 
 static uint8_t neo_pixel_0ch_led_buf[DELAY + 24*64];
 static uint8_t neo_pixel_1ch_led_buf[DELAY + 24*64];
@@ -116,9 +116,7 @@ void ws2812SetColor(uint32_t ch, uint32_t index, uint8_t red, uint8_t green, uin
 	}
 }
 
-//	for CLI function
 #ifdef _USE_HW_CLI
-
 void cliNeopixel(cli_args_t *args)
 {
 	bool ret = true;
@@ -141,14 +139,28 @@ void cliNeopixel(cli_args_t *args)
 		{
 			r = 255;
 		}
+		else if(r < 0)
+    {
+      r = 0;
+    }
+
 		if(g >= 255)
 		{
 			g = 255;
 		}
+    else if(g < 0)
+    {
+      g = 0;
+    }
+
 		if(b >= 255)
 		{
 			b = 255;
 		}
+    else if(b < 0)
+    {
+      b = 0;
+    }
 
 		//	Limit LED count
 		if(led_number >= ws2812.led_cnt - 1)
