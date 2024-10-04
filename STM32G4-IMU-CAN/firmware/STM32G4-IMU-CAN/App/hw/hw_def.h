@@ -71,8 +71,8 @@
 #define      HW_FRAM_MAX_SIZE       (2*1024*8) // bits
 
 #define _USE_HW_GPIO
-#define      HW_GPIO_CH_LIN_EN      0
-#define      HW_GPIO_MAX_CH         1
+#define      HW_GPIO_CH_BTN         2
+#define      HW_GPIO_MAX_CH         3
 
 #define _USE_HW_PWM
 #define      HW_PWM_MAX_CH          4

@@ -61,8 +61,8 @@ void Error_Handler(void);
 #define IMU_INT2_GPIO_Port GPIOA
 #define SW_Pin GPIO_PIN_0
 #define SW_GPIO_Port GPIOB
-#define ID0_Pin GPIO_PIN_3
-#define ID0_GPIO_Port GPIOB
+#define ID2_Pin GPIO_PIN_3
+#define ID2_GPIO_Port GPIOB
 #define ID1_Pin GPIO_PIN_4
 #define ID1_GPIO_Port GPIOB
 #define IMU_INT1_Pin GPIO_PIN_5

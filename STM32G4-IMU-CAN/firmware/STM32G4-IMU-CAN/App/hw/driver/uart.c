@@ -158,11 +158,6 @@ bool uartOpen(uint8_t ch, uint32_t baud)
       {
         ret_hal = HAL_RS485Ex_Init(uart_tbl[ch].p_huart, UART_DE_POLARITY_HIGH, 0, 0);
       }
-      else if(uart_hw_tbl[ch].uart_type == UART_TYPE_LIN)
-      {
-    	  gpioPinWrite(HW_GPIO_CH_LIN_EN, true);
-    	  ret_hal = HAL_LIN_Init(uart_tbl[ch].p_huart, UART_LINBREAKDETECTLENGTH_11B);
-      }
       else
       {
         ret_hal = HAL_UART_Init(uart_tbl[ch].p_huart);
@@ -190,11 +185,6 @@ bool uartOpen(uint8_t ch, uint32_t baud)
 bool uartClose(uint8_t ch)
 {
   if (ch >= UART_MAX_CH) return false;
-
-  if(uart_hw_tbl[ch].uart_type == UART_TYPE_LIN)
-  {
-	  gpioPinWrite(HW_GPIO_CH_LIN_EN, false);
-  }
 
   uart_tbl[ch].is_open = false;
 
