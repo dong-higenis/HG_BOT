@@ -119,17 +119,11 @@ static void cliCan(cli_args_t *args);
 
 static void canErrUpdate(uint8_t ch);
 
-
-
-
-
 bool canInit(void)
 {
   bool ret = true;
 
   uint8_t i;
-
-
 
   for(i = 0; i < CAN_MAX_CH; i++)
   {
