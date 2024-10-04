@@ -52,10 +52,9 @@ static button_pin_t button_pin[BUTTON_MAX_CH] =
         {SW_GPIO_Port, SW_Pin, GPIO_PIN_RESET},  // 0. BTN
     };
 
-static const char *button_name[BUTTON_MAX_CH+1] =
+static const char *button_name[BUTTON_MAX_CH] =
 {
-  "BTN",
-  "Unknown",
+  "BTN"
 };
 
 static button_t button_tbl[BUTTON_MAX_CH];

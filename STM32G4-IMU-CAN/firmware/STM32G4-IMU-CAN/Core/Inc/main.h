@@ -57,16 +57,16 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define SERVO2_M_Pin GPIO_PIN_0
-#define SERVO2_M_GPIO_Port GPIOA
-#define NEO2_M_Pin GPIO_PIN_6
-#define NEO2_M_GPIO_Port GPIOA
+#define IMU_INT2_Pin GPIO_PIN_7
+#define IMU_INT2_GPIO_Port GPIOA
 #define SW_Pin GPIO_PIN_0
 #define SW_GPIO_Port GPIOB
 #define ID0_Pin GPIO_PIN_3
 #define ID0_GPIO_Port GPIOB
 #define ID1_Pin GPIO_PIN_4
 #define ID1_GPIO_Port GPIOB
+#define IMU_INT1_Pin GPIO_PIN_5
+#define IMU_INT1_GPIO_Port GPIOB
 #define LED_Pin GPIO_PIN_6
 #define LED_GPIO_Port GPIOB
 
