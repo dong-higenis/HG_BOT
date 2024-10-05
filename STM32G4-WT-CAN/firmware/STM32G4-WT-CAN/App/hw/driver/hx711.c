@@ -95,6 +95,9 @@ int32_t hx711ValueAve(uint16_t sample)
   return answer;
 }
 
+/*
+초기 무게 값 측정해 offset 적용하기 위함
+*/
 void hx711Tare(uint16_t sample)
 {
   hx711Lock();
@@ -108,6 +111,11 @@ void hx711Tare(uint16_t sample)
   hx711Unlock();
 }
 
+/*
+noload_raw: 아무것도 없을때 무게 값
+load_raw: 켈리브레이션용 물건의 무게 RAW 값
+scale: 켈리브레이션용 물건의 무게 값(KG)
+*/
 void hx711Calibration(int32_t noload_raw, int32_t load_raw, float scale)
 {
   hx711Lock();
