@@ -37,8 +37,9 @@ void updateCan(void)
 {	
 	imu_info_t imu_info;
 	short r, p, y;
-    static uint16_t data_count = 0;
+    static uint8_t data_count = 0;
     static uint32_t pre_time = 0;
+	uint8_t dummy = 0; //status
 
     can_msg_t msg;
 	if(millis() - pre_time > 100)
@@ -57,8 +58,8 @@ void updateCan(void)
 			msg.dlc     = CAN_DLC_8;
 			msg.id      = CAN_ID_IMU_AXIS;
 			msg.length  = CAN_DLC_8;
-			msg.data[0] = (data_count >> 16);
-			msg.data[1] = (data_count & 0xFF);
+			msg.data[0] = data_count;
+			msg.data[1] = (buttonGetPressed(0) & 0x0F) | ((dummy << 4) & 0xF0);
 			msg.data[2] = (r >> 16);
 			msg.data[3] = (r & 0xFF);
 			msg.data[4] = (p >> 16);

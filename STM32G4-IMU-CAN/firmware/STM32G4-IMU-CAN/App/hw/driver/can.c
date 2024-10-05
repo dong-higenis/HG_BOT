@@ -400,8 +400,8 @@ bool canMsgWrite(uint8_t ch, can_msg_t *p_msg, uint32_t timeout)
 
   if(ch > CAN_MAX_CH) return false;
 
-  if (can_tbl[ch].err_code & CAN_ERR_BUS_OFF) return false;
-  if (can_tbl[ch].err_code & CAN_ERR_PASSIVE) return false;
+  //if (can_tbl[ch].err_code & CAN_ERR_BUS_OFF) return false;
+  //if (can_tbl[ch].err_code & CAN_ERR_PASSIVE) return false;
 
 
   p_can = can_tbl[ch].hfdcan;
