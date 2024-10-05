@@ -400,6 +400,7 @@ bool canMsgWrite(uint8_t ch, can_msg_t *p_msg, uint32_t timeout)
 
   if(ch > CAN_MAX_CH) return false;
 
+  // 하드웨어 적으로 TX 전송 시 Error Count 자동 차감 / 증가 하는 구조
   //if (can_tbl[ch].err_code & CAN_ERR_BUS_OFF) return false;
   //if (can_tbl[ch].err_code & CAN_ERR_PASSIVE) return false;
 
