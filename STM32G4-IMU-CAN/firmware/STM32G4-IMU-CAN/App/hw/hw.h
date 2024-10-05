@@ -22,8 +22,6 @@ extern "C" {
 #include "gpio.h"
 #include "fram.h"
 #include "imu.h"
-//
-#include "ws2812.h"
 
 bool hwInit(void);
 

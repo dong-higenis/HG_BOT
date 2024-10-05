@@ -4,7 +4,7 @@
 
 #include "ap_def.h"
 
-
+#define CAN_ID_IMU_AXIS 0x100
 
 void apInit(void);
 void apMain(void);
