@@ -51,8 +51,8 @@ bool pwmInit(void)
 	    pwm_tbl[i].max_value = 65535;
 	}
 
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+	//HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+	//HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 	//HAL_TIM_PWM_Start(&htim16, TIM_CHANNEL_1);
 	//HAL_TIM_PWM_Start(&htim17, TIM_CHANNEL_1);
 
@@ -74,16 +74,16 @@ bool pwmIsInit(void)
 
 void pwmWrite(uint8_t ch, uint16_t pwm_data)
 {
-	int res = 0;
+	//int res = 0;
 
 	if (ch >= PWM_MAX_CH) return;
-	uint32_t temp_buffer[4] = {0,};
+	//uint32_t temp_buffer[4] = {0,};
 
 	pwm_tbl[ch].duty = constrain(pwm_data, 0, pwm_tbl[ch].max_value);
-	temp_buffer[0] = pwm_tbl[ch].duty;
-	temp_buffer[1] = pwm_tbl[ch].duty;
-	temp_buffer[2] = pwm_tbl[ch].duty;
-	temp_buffer[3] = pwm_tbl[ch].duty;
+	//temp_buffer[0] = pwm_tbl[ch].duty;
+	//temp_buffer[1] = pwm_tbl[ch].duty;
+	//temp_buffer[2] = pwm_tbl[ch].duty;
+	//temp_buffer[3] = pwm_tbl[ch].duty;
 	//cliPrintf("[%d]set data = %d\n",ch,(uint32_t)pwm_tbl[ch].duty);
 	cliPrintf("[%d]set data = %d (org pwm_data = %d)(pwm_tbl[ch].max_value = %d)\n",ch,(uint32_t)pwm_tbl[ch].duty,pwm_data, pwm_tbl[ch].max_value);
 	switch(ch)
@@ -133,7 +133,7 @@ void cliPwm(cli_args_t *args)
 	uint8_t  ch;
 	uint32_t pwm;
 
-	uint8_t r, g, b;
+	//uint8_t r, g, b;
 
 	if (args->argc == 3)
 	{

@@ -20,7 +20,6 @@
 #include "main.h"
 #include "dma.h"
 #include "fdcan.h"
-#include "rtc.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -59,28 +58,6 @@ void mxInit();
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#if 0
-void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim)
-{
-	if (htim == &htim3){
-		cliPrintf("htim3\n");
-		HAL_TIM_PWM_Stop_DMA(htim, TIM_CHANNEL_2);
-	}
-	else if (htim == &htim2){
-		cliPrintf("htim2\n");
-		HAL_TIM_PWM_Stop_DMA(htim, TIM_CHANNEL_1);
-	}
-	else if (htim == &htim16){
-		cliPrintf("htim16\n");
-		HAL_TIM_PWM_Stop_DMA(htim, TIM_CHANNEL_1);
-	}
-	else if (htim == &htim17){
-		cliPrintf("htim17\n");
-		HAL_TIM_PWM_Stop_DMA(htim, TIM_CHANNEL_1);
-	}
-}
-
-#endif
 
 /* USER CODE END 0 */
 
@@ -116,7 +93,6 @@ int main(void)
   MX_DMA_Init();
   MX_FDCAN1_Init();
   MX_USART1_UART_Init();
-  MX_RTC_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_TIM16_Init();
@@ -154,9 +130,8 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV1;

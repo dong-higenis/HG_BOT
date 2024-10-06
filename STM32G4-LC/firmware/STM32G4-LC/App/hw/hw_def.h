@@ -11,6 +11,8 @@
 #define _DEF_BOARD_NAME           "STM32G4-ROBOT"
 
 
+#define _USE_HW_SERVO
+#define      HW_SERVO_MAX_CH        2
 
 #define _USE_HW_LED
 #define      HW_LED_MAX_CH          1
@@ -49,9 +51,9 @@
 #define _USE_HW_SWTIMER
 #define      HW_SWTIMER_MAX_CH      8
 
-#define _USE_HW_RTC
-#define      HW_RTC_BOOT_MODE       RTC_BKP_DR3
-#define      HW_RTC_RESET_BITS      RTC_BKP_DR4
+//#define _USE_HW_RTC
+//#define      HW_RTC_BOOT_MODE       RTC_BKP_DR3
+//#define      HW_RTC_RESET_BITS      RTC_BKP_DR4
 
 #define _USE_HW_USB
 #define _USE_HW_CDC
@@ -70,10 +72,10 @@
 #define      HW_FRAM_MAX_SIZE       (2*1024*8) // bits
 
 #define _USE_HW_GPIO
-#define      HW_GPIO_CH_LIN_EN      0
-#define      HW_GPIO_MAX_CH         1
+#define      HW_GPIO_CH_BTN         2
+#define      HW_GPIO_MAX_CH         3
 
 #define _USE_HW_PWM
-#define      HW_PWM_MAX_CH          4
+#define      HW_PWM_MAX_CH          2
 
 #endif
