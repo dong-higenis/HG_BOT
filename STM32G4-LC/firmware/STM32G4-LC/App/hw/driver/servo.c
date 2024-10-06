@@ -143,7 +143,7 @@ void cliServo(cli_args_t *args)
 	{		
 		for(uint8_t i=0;i<HW_SERVO_MAX_CH;i++)
 		{
-			cliPrintf("%d - %d'(duty: %d)\n", i, servo_info[i].now_servo_angle, servo_info[ch].servo_duty);
+			cliPrintf("%d - %d'(duty: %d)\n", i, servo_info[i].now_servo_angle, servo_info[i].servo_duty);
 		}
 		ret = true;
 	}
@@ -161,7 +161,7 @@ void cliServo(cli_args_t *args)
 		}
 	}
 
-	if (args->argc == 4 && args->isStr(0, "get") == true)
+	if (args->argc == 3 && args->isStr(0, "get") == true)
 	{
 		if(args->isStr(1, "pos") == true)
 		{
