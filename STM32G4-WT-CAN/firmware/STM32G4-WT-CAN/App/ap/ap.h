@@ -4,7 +4,10 @@
 
 #include "ap_def.h"
 
-#define CAN_ID_IMU_AXIS 0x100
+#define CAN_ID_WT_WEIGHT            (0x120)
+#define CAN_ID_COMMANDER_WT_CAL_SET (0x202)
+
+
 
 void apInit(void);
 void apMain(void);

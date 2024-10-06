@@ -3,11 +3,15 @@
 #include "cli.h"
 
 #ifdef _USE_HW_HX711
-
+/* 
+https://github.com/nimaltd/HX711 참고
+*/
 
 //#define   _hx711DelayUsLopp  4
+#define HX711_READ_SAMPLE      10
 
 static hx711_t hx711;
+
 
 #ifdef _USE_HW_CLI
 static void cliHx711(cli_args_t *args);
@@ -29,7 +33,9 @@ void hx711DelayUs(void)
 void hx711Lock()
 {
   while (hx711.lock)
+  {
     delay(1);
+  }
   hx711.lock = 1;      
 }
 
@@ -47,21 +53,19 @@ void hx711Init()
   hx711Value();
   hx711Value();
   hx711Unlock(); 
-  hx711SetCoef(354.5f);
+
+
 #ifdef _USE_HW_CLI
   cliAdd("hx711", cliHx711);
 #endif
 }
 
-int32_t hx711Value()
+int32_t hx711ValueNoDelay()
 {
   uint32_t data = 0;
-  uint32_t  startTime = millis();
-  while(gpioPinRead(HW_GPIO_CH_HX711_DAT))
+  if(gpioPinRead(HW_GPIO_CH_HX711_DAT))
   {
-    delay(1);
-    if(millis() - startTime > 150)
-      return 0;
+    return 0;
   }
   for(int8_t i=0; i<24 ; i++)
   {
@@ -81,7 +85,39 @@ int32_t hx711Value()
   return data;    
 }
 
-int32_t hx711ValueAve(uint16_t sample)
+int32_t hx711Value()
+{
+  uint32_t data = 0;
+  uint32_t  startTime = millis();
+  // 이부분 수정 필요 지연이 될 수 있음
+  while(gpioPinRead(HW_GPIO_CH_HX711_DAT))
+  {
+    delay(1);
+    if(millis() - startTime > 150)
+    {
+      //not ready to read
+      return 0;
+    }
+  }
+  for(int8_t i=0; i<24 ; i++)
+  {
+    gpioPinWrite(HW_GPIO_CH_HX711_SCK, true);      
+    hx711DelayUs();    
+    gpioPinWrite(HW_GPIO_CH_HX711_SCK, false);  
+    hx711DelayUs();
+    data = data << 1;    
+    if(gpioPinRead(HW_GPIO_CH_HX711_DAT))
+      data ++;
+  }
+  data = data ^ 0x800000; 
+  gpioPinWrite(HW_GPIO_CH_HX711_SCK, true);   
+  hx711DelayUs();
+  gpioPinWrite(HW_GPIO_CH_HX711_SCK, false);  
+  hx711DelayUs();
+  return data;    
+}
+
+int32_t hx711ValueAvg(uint16_t sample)
 {
   hx711Lock();
   int64_t  ave = 0;
@@ -95,6 +131,9 @@ int32_t hx711ValueAve(uint16_t sample)
   return answer;
 }
 
+/*
+초기 무게 값 측정해 offset 적용하기 위함
+*/
 void hx711Tare(uint16_t sample)
 {
   hx711Lock();
@@ -108,6 +147,11 @@ void hx711Tare(uint16_t sample)
   hx711Unlock();
 }
 
+/*
+noload_raw: 아무것도 없을때 무게 값
+load_raw: 켈리브레이션용 물건의 무게 RAW 값
+scale: 켈리브레이션용 물건의 무게 값(KG)
+*/
 void hx711Calibration(int32_t noload_raw, int32_t load_raw, float scale)
 {
   hx711Lock();
@@ -126,9 +170,49 @@ float hx711Weight(uint16_t sample)
     delay(5);
   }
   int32_t data = (int32_t)(ave / sample);
+  hx711.last_raw_data = data;
   float answer =  (data - hx711.offset) / hx711.coef;
   hx711Unlock();
   return answer;
+}
+
+float hx711UpdateWeight()
+{
+  uint16_t sample = 10;
+  static uint32_t tm = 0;
+  static int64_t  avg = 0;
+  static uint8_t count = 0;
+  hx711Lock();
+  if(millis() - tm >= 5)
+  {
+    tm = millis();
+    int32_t val = hx711ValueNoDelay();
+    if(val != 0)
+    {
+      avg += val;
+      count++;
+      if(count >= sample)
+      {
+        int32_t data = (int32_t)(avg / sample);
+        hx711.last_raw_data = data;
+        hx711.last_weight =  (data - hx711.offset) / hx711.coef;
+        count = 0;
+        avg = 0;
+      }    
+    }
+  }
+  hx711Unlock();
+  return hx711.last_weight;
+}
+
+float hx711GetLastWeight()
+{
+  return hx711.last_weight;
+}
+
+int32_t hx711GetLastValue()
+{
+  return hx711.last_raw_data;
 }
 
 void hx711SetCoef(float coef)
@@ -155,6 +239,7 @@ void hx711PowerUp()
   hx711.status = 1;
 }
 
+
 #ifdef _USE_HW_CLI
 static void cliHx711(cli_args_t *args)
 {
@@ -174,7 +259,7 @@ static void cliHx711(cli_args_t *args)
   {
     while(cliKeepLoop())
     {
-      cliPrintf("%f\n", hx711Weight(10));
+      cliPrintf("%f(%d)\n", hx711Weight(HX711_READ_SAMPLE), hx711ValueAvg(HX711_READ_SAMPLE));
       delay(100);
     }
     ret = true;
@@ -193,12 +278,16 @@ static void cliHx711(cli_args_t *args)
     ret = true;
   }
 
-  if (args->argc == 2 && args->isStr(0, "calibration") == true)
-  {
-    int32_t raw = args->getData(1);
-    int known_weight = args->getData(2);
-    cliPrintf("calibration %dkg\n", known_weight);
-    hx711Calibration(0, known_weight);
+  if (args->argc == 4 && args->isStr(0, "cali") == true)
+  {    
+    int32_t  no_load_raw = args->getData(1);
+    int32_t  load_raw = args->getData(2);
+    int32_t  load_weight = args->getData(3);
+    cliPrintf("calibration:\n");
+    cliPrintf("no laod raw value: %d\n", no_load_raw);
+    cliPrintf("laod raw value: %d\n", load_raw);
+    cliPrintf("weight: %dKG\n", load_weight);
+    hx711Calibration(no_load_raw, load_raw, load_weight);
     ret = true;
   }
 
@@ -219,6 +308,20 @@ static void cliHx711(cli_args_t *args)
       cliPrintf("coef %f\n", hx711.coef);
       ret = true;
     }
+    if(args->isStr(1, "raw") == true)
+    {
+      cliPrintf("raw %d\n", hx711ValueAvg(HX711_READ_SAMPLE));
+      ret = true;
+    }
+  }
+  if (args->argc == 3)
+  {
+    if(args->isStr(0, "read") == true && args->isStr(1, "raw") == true)
+    {      
+      uint16_t sampling = args->getData(2);
+      cliPrintf("sampling: %d, raw %d\n", sampling, hx711ValueAvg(sampling));
+      ret = true;
+    }
   }
 
   if (ret != true)
@@ -228,7 +331,8 @@ static void cliHx711(cli_args_t *args)
     cliPrintf("hx711 power [on:off]\n");
     cliPrintf("hx711 write coef val\n");    
     cliPrintf("hx711 read coef\n");
-    cliPrintf("hx711 calibration [kg]\n");
+    cliPrintf("hx711 read raw sampling[1-1000]\n");
+    cliPrintf("hx711 cali [no raw] [load raw] [kg]\n");
     //cliPrintf("hx711 cali\n");
     //cliPrintf("hx711 read cali\n");
   }
