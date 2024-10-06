@@ -10,6 +10,9 @@
 #define _DEF_FIRMWATRE_VERSION    "V240905R1"
 #define _DEF_BOARD_NAME           "STM32G4-ROBOT"
 
+#define _USE_HW_NEOPIXEL
+#define      HW_NEOPIXEL_MAX_CH     2
+#define      HW_NEOPIXEL_MAX_COUNT  64
 
 #define _USE_HW_SERVO
 #define      HW_SERVO_MAX_CH        2

@@ -7,6 +7,9 @@
 #include "ws2812.h"
 #include "cli.h"
 
+
+#ifdef _USE_HW_NEOPIXEL
+
 //	160MHz Clock > 1.3uS
 //	High	0.7us
 //	Low		0.35us
@@ -21,12 +24,12 @@ bool is_init = false;
 typedef struct
 {
 	uint16_t led_cnt;
+	uint8_t led_buf[DELAY + 24*HW_NEOPIXEL_MAX_COUNT];
 } ws2812_t;
 
-static uint8_t neo_pixel_0ch_led_buf[DELAY + 24*64];
-static uint8_t neo_pixel_1ch_led_buf[DELAY + 24*64];
 
-ws2812_t ws2812;
+ws2812_t ws2812[HW_NEOPIXEL_MAX_CH];
+
 extern TIM_HandleTypeDef htim17;	//	NeoPixel 0
 extern TIM_HandleTypeDef htim16;	//	NeoPixel 1
 
@@ -37,8 +40,8 @@ void cliNeopixel(cli_args_t *args);
 
 bool ws2812Init(void)
 {
-	memset(neo_pixel_0ch_led_buf, 0, sizeof(neo_pixel_0ch_led_buf));
-	memset(neo_pixel_1ch_led_buf, 0, sizeof(neo_pixel_1ch_led_buf));
+	memset(ws2812[0].led_buf, 0, sizeof(ws2812[0].led_buf));
+	memset(ws2812[1].led_buf, 0, sizeof(ws2812[1].led_buf));
 
 #ifdef _USE_HW_CLI
 	cliAdd("neopixel", cliNeopixel);
@@ -50,10 +53,11 @@ bool ws2812Init(void)
 
 void ws2812Begin(uint32_t led_cnt)
 {
-	ws2812.led_cnt = led_cnt;
+	ws2812[0].led_cnt = led_cnt;
+	ws2812[1].led_cnt = led_cnt;
 	//	DMA Start
-	HAL_TIM_PWM_Start_DMA(&htim17, TIM_CHANNEL_1, (uint32_t *)neo_pixel_0ch_led_buf, (DELAY + 24 * led_cnt) * 1);
-	HAL_TIM_PWM_Start_DMA(&htim16, TIM_CHANNEL_1, (uint32_t *)neo_pixel_1ch_led_buf, (DELAY + 24 * led_cnt) * 1);
+	HAL_TIM_PWM_Start_DMA(&htim17, TIM_CHANNEL_1, (uint32_t *)ws2812[0].led_buf, (DELAY + 24 * ws2812[0].led_cnt) * 1);
+	HAL_TIM_PWM_Start_DMA(&htim16, TIM_CHANNEL_1, (uint32_t *)ws2812[1].led_buf, (DELAY + 24 * ws2812[1].led_cnt) * 1);
 }
 
 void ws2812SetColor(uint32_t ch, uint32_t index, uint8_t red, uint8_t green, uint8_t blue)
@@ -63,6 +67,10 @@ void ws2812SetColor(uint32_t ch, uint32_t index, uint8_t red, uint8_t green, uin
 	uint8_t b_bit[8];
 
 	uint32_t offset;
+	if(ch >= HW_NEOPIXEL_MAX_CH || index >= HW_NEOPIXEL_MAX_COUNT)
+	{
+		return;
+	}
 
 	for (int i=0; i<8; i++)
 	{
@@ -96,94 +104,56 @@ void ws2812SetColor(uint32_t ch, uint32_t index, uint8_t red, uint8_t green, uin
 		}
 		blue <<= 1;
 	}
-
 	//	Xus delay value
 	offset = DELAY;
 
-	switch(ch)
-	{
-	case 0:
-		memcpy(&neo_pixel_0ch_led_buf[offset + index*24 + 8*0], g_bit, 8*1);
-		memcpy(&neo_pixel_0ch_led_buf[offset + index*24 + 8*1], r_bit, 8*1);
-		memcpy(&neo_pixel_0ch_led_buf[offset + index*24 + 8*2], b_bit, 8*1);
-		break;
-
-	case 1:
-		memcpy(&neo_pixel_1ch_led_buf[offset + index*24 + 8*0], g_bit, 8*1);
-		memcpy(&neo_pixel_1ch_led_buf[offset + index*24 + 8*1], r_bit, 8*1);
-		memcpy(&neo_pixel_1ch_led_buf[offset + index*24 + 8*2], b_bit, 8*1);
-		break;
-	}
+	memcpy(&ws2812[ch].led_buf[offset + index*24 + 8*0], g_bit, 8*1);
+	memcpy(&ws2812[ch].led_buf[offset + index*24 + 8*1], r_bit, 8*1);
+	memcpy(&ws2812[ch].led_buf[offset + index*24 + 8*2], b_bit, 8*1);	
 }
 
 #ifdef _USE_HW_CLI
 void cliNeopixel(cli_args_t *args)
 {
-	bool ret = true;
+	bool ret = false;
 	uint8_t	ch;
 	uint8_t r, g, b;
-	uint8_t led_number;
+	uint8_t index;
 
-	//	neopixel <ch> <index> <R> <G> <B>
-	cliPrintf("args->argc = %d\n",args->argc);
-	if (args->argc == 5)
+	if (args->argc == 1 && args->isStr(0, "info") == true)
 	{
-		ch  = (uint8_t)args->getData(0);
-		led_number = (uint8_t)args->getData(1);
-		r = (uint8_t)args->getData(2);
-		g = (uint8_t)args->getData(3);
-		b = (uint8_t)args->getData(4);
-
-		//	LED Value Limit (Protect overflow)
-		if(r >= 255)
+		cliPrintf("neopixel init: %d\n", is_init);	
+		for(uint8_t i=0;i<HW_NEOPIXEL_MAX_CH;i++)
 		{
-			r = 255;
-		}
-		else if(r < 0)
-    {
-      r = 0;
-    }
-
-		if(g >= 255)
-		{
-			g = 255;
-		}
-    else if(g < 0)
-    {
-      g = 0;
-    }
-
-		if(b >= 255)
-		{
-			b = 255;
-		}
-    else if(b < 0)
-    {
-      b = 0;
-    }
-
-		//	Limit LED count
-		if(led_number >= ws2812.led_cnt - 1)
-		{
-			led_number = ws2812.led_cnt - 1;
-		}
-
-		//
-		cliPrintf("ch=%d, led_number=%d, r=%d, g=%d, b=%d\n", ch, led_number, r, g, b);
-		ws2812SetColor(ch, led_number, r, g, b);
+			cliPrintf("[%d] max leds: %d\n", i, ws2812[i].led_cnt);
+		}			
+		ret = true;
 	}
-	else
+	if (args->argc == 6 && args->isStr(0, "set") == true)
 	{
-		ret = false;
-	}
+		ch  = (uint8_t)args->getData(1);
+		index = (uint8_t)args->getData(2);
+		r = (uint8_t)args->getData(3);
+		g = (uint8_t)args->getData(4);
+		b = (uint8_t)args->getData(5);
 
+		if(ch < HW_NEOPIXEL_MAX_CH)
+		{		
+			if(index < ws2812[ch].led_cnt)
+			{
+				ws2812SetColor(ch, index, r, g, b);
+				cliPrintf("ch=%d, index=%d, r=%d, g=%d, b=%d\n", ch, index, r, g, b);
+				ret = true;
+			}
+		}
+	}
 	if (ret == false)
 	{
-		cliPrintf("Command format => NEOPIXEL <led ch> <led index> <red value> <green value> <blue value>\n");
-		cliPrintf("ex) NEOPIXEL 0 0 255 255 255  >> white out\n");
-		cliPrintf("ex) NEOPIXEL 0 0 255 0 0  >> red out\n");
-		cliPrintf("ex) NEOPIXEL 0 0 0 255 0  >> green out\n");
-		cliPrintf("ex) NEOPIXEL 0 0 0 0 255  >> blue out\n");
+		cliPrintf("noepixel info\n");    
+		cliPrintf("noepixel set [ch] [index] [red] [gree] [blue]\n");    
 	}
 }
+
+#endif
+
 #endif
