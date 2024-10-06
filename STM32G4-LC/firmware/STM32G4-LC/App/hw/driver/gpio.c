@@ -18,8 +18,9 @@ typedef struct
 
 const gpio_tbl_t gpio_tbl[HW_GPIO_MAX_CH] =
 {
-	//	LIN Disable
-    //{LIN_EN_GPIO_Port, LIN_EN_Pin, _DEF_OUTPUT, GPIO_PIN_SET, GPIO_PIN_RESET, _DEF_HIGH, "LIN_EN" }
+    {ID0_GPIO_Port,        ID0_Pin,        _DEF_INPUT_PULLUP, GPIO_PIN_RESET, GPIO_PIN_SET,   _DEF_HIGH, "ID1" },
+    {ID1_GPIO_Port,        ID1_Pin,        _DEF_INPUT_PULLUP, GPIO_PIN_RESET, GPIO_PIN_SET,   _DEF_HIGH, "ID2" },
+    {SW_GPIO_Port,         SW_Pin,         _DEF_INPUT_PULLUP, GPIO_PIN_RESET, GPIO_PIN_SET,   _DEF_HIGH, "BTN" },
 };
 
 

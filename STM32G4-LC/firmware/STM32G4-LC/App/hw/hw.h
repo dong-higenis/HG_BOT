@@ -15,15 +15,16 @@ extern "C" {
 #include "util.h"
 #include "swtimer.h"
 #include "button.h"
-#include "rtc.h"
-#include "usb.h"
+//#include "rtc.h"
+//#include "usb.h"
 #include "cdc.h"
 #include "can.h"
 #include "i2c.h"
 #include "gpio.h"
 #include "fram.h"
-//
+
 #include "ws2812.h"
+#include "servo.h"
 
 bool hwInit(void);
 

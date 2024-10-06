@@ -4,8 +4,7 @@
 
 
 #ifdef _USE_HW_CAN
-//	CAN Disable
-#elif
+
 typedef struct
 {
   uint32_t prescaler;
@@ -120,17 +119,11 @@ static void cliCan(cli_args_t *args);
 
 static void canErrUpdate(uint8_t ch);
 
-
-
-
-
 bool canInit(void)
 {
   bool ret = true;
 
   uint8_t i;
-
-
 
   for(i = 0; i < CAN_MAX_CH; i++)
   {
@@ -263,8 +256,6 @@ bool canOpen(uint8_t ch, CanMode_t mode, CanFrame_t frame, CanBaud_t baud, CanBa
 
 
   can_tbl[ch].is_open = true;
-  HAL_GPIO_WritePin(CAN_STB_GPIO_Port, CAN_STB_Pin, GPIO_PIN_RESET);
-
   return ret;
 }
 
@@ -278,9 +269,6 @@ bool canIsOpen(uint8_t ch)
 void canClose(uint8_t ch)
 {
   if(ch >= CAN_MAX_CH) return;
-
-  HAL_GPIO_WritePin(CAN_STB_GPIO_Port, CAN_STB_Pin, GPIO_PIN_SET);
-
   if (can_tbl[ch].is_open)
   {
     HAL_FDCAN_DeInit(can_tbl[ch].hfdcan);
@@ -412,8 +400,9 @@ bool canMsgWrite(uint8_t ch, can_msg_t *p_msg, uint32_t timeout)
 
   if(ch > CAN_MAX_CH) return false;
 
-  if (can_tbl[ch].err_code & CAN_ERR_BUS_OFF) return false;
-  if (can_tbl[ch].err_code & CAN_ERR_PASSIVE) return false;
+  // 하드웨어 적으로 TX 전송 시 Error Count 자동 차감 / 증가 하는 구조
+  //if (can_tbl[ch].err_code & CAN_ERR_BUS_OFF) return false;
+  //if (can_tbl[ch].err_code & CAN_ERR_PASSIVE) return false;
 
 
   p_can = can_tbl[ch].hfdcan;

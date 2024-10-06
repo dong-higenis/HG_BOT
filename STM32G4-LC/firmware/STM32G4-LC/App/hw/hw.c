@@ -20,7 +20,7 @@ bool hwInit(void)
   gpioInit();
   ledInit();
   buttonInit();
-  //i2cInit();
+  
   uartInit();
 
   for (int i=0; i<HW_UART_MAX_CH; i++)
@@ -34,15 +34,17 @@ bool hwInit(void)
   logPrintf("Booting..Clock\t\t: %d Mhz\r\n", (int)HAL_RCC_GetSysClockFreq()/1000000);
   logPrintf("\n");
 
-  //framInit();
-  rtcInit();
-  //canInit();
-  //	USB Disable
-  //usbInit();
-  //usbBegin(USB_CDC_MODE);
-  //cdcInit();
+	//framInit();
+	//rtcInit();
+	canInit();
+	//USB Disable
+	//usbInit();
+	//usbBegin(USB_CDC_MODE);
+	//cdcInit();
 
-  pwmInit();
+	//pwmInit();
+	ws2812Init();
+	servoInit();
 
   return true;
 }
