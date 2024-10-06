@@ -18,6 +18,7 @@
 
 typedef struct
 {
+	uint32_t servo_duty;
 	int32_t now_servo_angle;
 	int16_t step_angle;
 	int16_t step_val;
@@ -92,7 +93,7 @@ void servoSetPos(uint8_t ch, int16_t angle)
 	//float temp_servo_duty_per = (5.0 + ((float)angle * 0.0278));	//	1ms~2ms version
 	float temp_servo_duty_per = (2.5 + ((float)(angle + 90)* 0.0555556));	//	0.5ms~2.5ms version
 	float temp_servo_duty = ( temp_servo_duty_per  / 100.0 ) * 10000.0;
-	uint32_t servo_duty = (uint32_t)temp_servo_duty;
+	servo_info[ch].servo_duty = (uint32_t)temp_servo_duty;
 
 	//cliPrintf("target angle = %d\n", (int)angle);
 	//cliPrintf("temp_servo_duty_per = %d\n", (int)temp_servo_duty_per);
@@ -101,12 +102,10 @@ void servoSetPos(uint8_t ch, int16_t angle)
 	switch(ch)
 	{
 	case _DEF_PWM1:
-		htim3.Instance->CCR2 = servo_duty;
-		cliPrintf("htim3.Instance->CCR2 = %d\n",htim3.Instance->CCR2);
+		htim3.Instance->CCR2 = servo_info[ch].servo_duty;		
 		break;
 	case _DEF_PWM2:
-		htim2.Instance->CCR1 = servo_duty;
-		cliPrintf("htim2.Instance->CCR1 = %d\n",htim2.Instance->CCR1);
+		htim2.Instance->CCR1 = servo_info[ch].servo_duty;		
 		break;
 	}
 }
@@ -144,7 +143,7 @@ void cliServo(cli_args_t *args)
 	{		
 		for(uint8_t i=0;i<HW_SERVO_MAX_CH;i++)
 		{
-			cliPrintf("%d:%d'\n",i, servo_info[i].now_servo_angle);
+			cliPrintf("%d - %d'(duty: %d)\n", i, servo_info[i].now_servo_angle, servo_info[ch].servo_duty);
 		}
 		ret = true;
 	}

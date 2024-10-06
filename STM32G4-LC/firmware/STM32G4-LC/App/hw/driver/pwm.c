@@ -93,11 +93,11 @@ void pwmWrite(uint8_t ch, uint16_t pwm_data)
 	//
 	case _DEF_PWM1:
 		htim2.Instance->CCR1 = (uint32_t)pwm_tbl[ch].duty;
-		cliPrintf("htim2.Instance->CCR1 = %d\n",htim2.Instance->CCR1);
+		//cliPrintf("htim2.Instance->CCR1 = %d\n",htim2.Instance->CCR1);
 		break;
 	case _DEF_PWM2:
 		htim3.Instance->CCR2 = (uint32_t)pwm_tbl[ch].duty;
-		cliPrintf("htim3.Instance->CCR2 = %d\n",htim3.Instance->CCR2);
+		//cliPrintf("htim3.Instance->CCR2 = %d\n",htim3.Instance->CCR2);
 		break;
 
 	//
