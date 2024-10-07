@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "cli.h": "c",
+        "gpio.h": "c",
+        "hw_def.h": "c",
+        "hw.h": "c",
+        "ap.h": "c",
+        "ap_def.h": "c"
+    }
+}

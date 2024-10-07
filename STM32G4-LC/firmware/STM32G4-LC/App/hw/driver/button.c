@@ -1,3 +1,4 @@
+#include "gpio.h"
 #include "button.h"
 #include "cli.h"
 #include "swtimer.h"
@@ -5,11 +6,7 @@
 
 #ifdef _USE_HW_BUTTON
 
-
-
 #define BUTTON_EVENT_MAX          8
-
-
 
 typedef struct
 {
@@ -33,9 +30,8 @@ typedef struct
 
 typedef struct
 {
-  GPIO_TypeDef *port;
-  uint32_t      pin;
-  GPIO_PinState on_state;
+  uint8_t      gpio_ch;  
+  const char   *p_name;
 } button_pin_t;
 
 
@@ -48,15 +44,10 @@ static bool buttonGetPin(uint8_t ch);
 
 
 static button_pin_t button_pin[BUTTON_MAX_CH] =
-    {
-        {SW_GPIO_Port, SW_Pin, GPIO_PIN_RESET},  // 0. BTN
-    };
-
-static const char *button_name[BUTTON_MAX_CH+1] =
 {
-  "BTN",
-  "Unknown",
+    { HW_GPIO_CH_BTN, "BTN"},  // 0. BTN
 };
+
 
 static button_t button_tbl[BUTTON_MAX_CH];
 static bool is_enable = true;
@@ -257,8 +248,8 @@ bool buttonGetPin(uint8_t ch)
   {
     return false;
   }
-
-  if (HAL_GPIO_ReadPin(button_pin[ch].port, button_pin[ch].pin) == button_pin[ch].on_state)
+  
+  if (gpioPinRead(button_pin[ch].gpio_ch))
   {
     ret = true;
   }
@@ -308,12 +299,6 @@ uint32_t buttonGetData(void)
   return ret;
 }
 
-const char *buttonGetName(uint8_t ch)
-{
-  ch = constrain(ch, 0, BUTTON_MAX_CH);
-
-  return button_name[ch];
-}
 
 uint8_t  buttonGetPressedCount(void)
 {
@@ -466,7 +451,7 @@ void cliButton(cli_args_t *args)
   {
     for (int i=0; i<BUTTON_MAX_CH; i++)
     {
-      cliPrintf("%-12s pin %d\n", buttonGetName(i), button_pin[i].pin);
+      cliPrintf("%-12s pin %d\n", button_pin[i].p_name, gpioPinRead(button_pin[i].gpio_ch));
     }
     ret = true;
   }
@@ -498,7 +483,7 @@ void cliButton(cli_args_t *args)
       {
         if(buttonGetPressed(i))
         {
-          cliPrintf("%-12s, Time :  %d ms\n", buttonGetName(i), buttonGetPressedTime(i));
+          cliPrintf("%-12s, Time :  %d ms\n", button_pin[i].p_name, buttonGetPressedTime(i));
         }
       }
       delay(10);

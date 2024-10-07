@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "hw.h": "c",
+        "usb.h": "c",
+        "swtimer.h": "c",
+        "cli.h": "c",
+        "button.h": "c",
+        "gpio.h": "c",
+        "math.h": "c",
+        "servo.h": "c",
+        "hw_def.h": "c"
+    }
+}
