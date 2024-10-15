@@ -1,0 +1,11 @@
+Sel,ID,Ext.ID,FD,BRS,DLC,Data
+False,200,False,False,False,8,00 00 20 20 20 00 00 00 
+False,200,False,False,False,8,01 00 20 20 20 00 00 00 
+False,200,False,False,False,8,00 00 00 00 00 00 00 00 
+False,200,False,False,False,8,01 00 00 00 00 00 00 00 
+True,201,False,False,False,8,00 FF A6 00 00 00 00 00 
+True,201,False,False,False,8,01 FF A6 00 00 00 00 00 
+False,201,False,False,False,8,00 00 00 00 00 00 00 00 
+False,201,False,False,False,8,01 00 00 00 00 00 00 00 
+False,201,False,False,False,8,00 00 5A 00 00 00 00 00 
+False,201,False,False,False,8,01 00 5A 00 00 00 00 00 

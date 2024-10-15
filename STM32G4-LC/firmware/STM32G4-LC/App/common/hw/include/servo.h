@@ -17,10 +17,9 @@
 #ifdef _USE_HW_SERVO
 
 bool servoInit(void);
-void servoBegin(void);
+void servoOpen(uint32_t ch);
 void servoSetPos(uint8_t ch, int16_t angle);
 int16_t servoGetPos(uint8_t ch);
-void servoSetContinue(void);
 uint32_t calAngleToRegval(int16_t angle);
 int16_t calRegvalToAngle(uint32_t register_data);
 

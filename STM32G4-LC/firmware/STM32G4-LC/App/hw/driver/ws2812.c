@@ -27,7 +27,6 @@ typedef struct
 	uint8_t led_buf[DELAY + 24*HW_NEOPIXEL_MAX_COUNT];
 } ws2812_t;
 
-
 ws2812_t ws2812[HW_NEOPIXEL_MAX_CH];
 
 extern TIM_HandleTypeDef htim17;	//	NeoPixel 0
@@ -51,13 +50,20 @@ bool ws2812Init(void)
 	return true;
 }
 
-void ws2812Begin(uint32_t led_cnt)
+void ws2812Open(uint32_t ch, uint32_t led_cnt)
 {
-	ws2812[0].led_cnt = led_cnt;
-	ws2812[1].led_cnt = led_cnt;
-	//	DMA Start
-	HAL_TIM_PWM_Start_DMA(&htim17, TIM_CHANNEL_1, (uint32_t *)ws2812[0].led_buf, (DELAY + 24 * ws2812[0].led_cnt) * 1);
-	HAL_TIM_PWM_Start_DMA(&htim16, TIM_CHANNEL_1, (uint32_t *)ws2812[1].led_buf, (DELAY + 24 * ws2812[1].led_cnt) * 1);
+  ws2812[ch].led_cnt = led_cnt;
+
+  //  DMA Start
+  switch(ch)
+  {
+  case 0:
+    HAL_TIM_PWM_Start_DMA(&htim17, TIM_CHANNEL_1, (uint32_t *)(ws2812[ch].led_buf), (DELAY + 24 * led_cnt) * 1);
+    break;
+  case 1:
+    HAL_TIM_PWM_Start_DMA(&htim16, TIM_CHANNEL_1, (uint32_t *)(ws2812[ch].led_buf), (DELAY + 24 * led_cnt) * 1);
+    break;
+  }
 }
 
 void ws2812SetColor(uint32_t ch, uint32_t index, uint8_t red, uint8_t green, uint8_t blue)

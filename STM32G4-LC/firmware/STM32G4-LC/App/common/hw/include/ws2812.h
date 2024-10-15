@@ -20,7 +20,7 @@
 #define NEO_PIXEL_1CH	1
 
 bool ws2812Init(void);
-void ws2812Begin(uint32_t led_cnt);
+void ws2812Open(uint32_t ch, uint32_t led_cnt);
 void ws2812SetColor(uint32_t ch, uint32_t index, uint8_t red, uint8_t green, uint8_t blue);
 
 #endif

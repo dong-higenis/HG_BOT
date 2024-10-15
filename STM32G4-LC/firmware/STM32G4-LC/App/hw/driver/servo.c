@@ -6,15 +6,10 @@
  */
 #include "servo.h"
 #include "cli.h"
-
-#ifdef _USE_HW_SERVO
-
 #include <math.h>
 
-#define ANGLE_0		750
-#define ANGLE_M90	250
-#define ANGLE_90	1250
 
+#ifdef _USE_HW_SERVO
 
 typedef struct
 {
@@ -29,21 +24,11 @@ typedef struct
 	bool start_move_flag;
 } servo_info_t;
 
-typedef struct
-{
-	uint16_t max_value;
-	uint16_t duty;
-	uint32_t channel;
-	uint32_t step;
-} servo_pwm_tbl_t;
-
 #ifdef _USE_HW_CLI
 void cliServo(cli_args_t *args);
 #endif
 
 servo_info_t servo_info[HW_SERVO_MAX_CH];
-
-//static servo_pwm_tbl_t servo_pwm_tbl[2];
 
 bool servo_init = false;
 
@@ -52,10 +37,7 @@ extern TIM_HandleTypeDef htim3;	//	NeoPixel 1
 
 bool servoInit(void)
 {
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 	servo_init = true;
-
 
 #ifdef _USE_HW_CLI
 	cliAdd("servo", cliServo);
@@ -63,10 +45,19 @@ bool servoInit(void)
 	return true;
 }
 
-void servoBegin(void)
+void servoOpen(uint32_t ch)
 {
-	servoSetPos(0, 0);
-	servoSetPos(1, 0);
+  switch(ch)
+  {
+  case 0:
+    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+    break;
+
+  case 1:
+    HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
+    break;
+  }
+  servoSetPos(ch, 0);
 }
 
 int16_t servoGetPos(uint8_t ch)
@@ -119,15 +110,9 @@ uint32_t calAngleToRegval(int16_t angle)
 
 int16_t calRegvalToAngle(uint32_t register_data)
 {
-    float temp_servo_duty_per = ((float)register_data / 10000.0) * 100.0;
-    int16_t angle = (int16_t)((temp_servo_duty_per - 2.5) / 0.0555556) - 90;
-    return angle;
-}
-
-//	Main Thread Operation task
-void servoSetContinue(void)
-{
-  // not use.
+  float temp_servo_duty_per = ((float)register_data / 10000.0) * 100.0;
+  int16_t angle = (int16_t)((temp_servo_duty_per - 2.5) / 0.0555556) - 90;
+  return angle;
 }
 
 #ifdef _USE_HW_CLI
@@ -135,7 +120,6 @@ void cliServo(cli_args_t *args)
 {
 	bool ret = false;
 	uint8_t	ch;
-	uint8_t speed;
 	int32_t angle;
 	
 
@@ -173,28 +157,10 @@ void cliServo(cli_args_t *args)
 			}
 		}
 	}
-	//	servo continue <ch> <speed> <angle>
-	if (args->argc == 4 && args->isStr(0, "continue"))
-	{
-		ch  = (uint8_t)args->getData(1);
-		speed = (uint8_t)args->getData(2);
-		angle = (int32_t)args->getData(3);
-
-		if(ch < HW_SERVO_MAX_CH)
-		{
-			servo_info[ch].step_val = speed;
-			servo_info[ch].target_val = angle;
-			servo_info[ch].action_command = true;
-			servo_info[ch].start_move_flag = true;
-			servo_info[ch].step_angle = calAngleToRegval(speed);
-			cliPrintf("set pos ch=%d, angle=%d, speed=%d\n", ch, angle, speed);		
-		}
-		ret = true;
-	}
 
 	if (ret == false)
 	{
-    	cliPrintf("servo info\n");
+	  cliPrintf("servo info\n");
 		cliPrintf("servo set pos [ch] [angle]\n");
 		cliPrintf("servo get pos [ch]\n");
 		cliPrintf("servo continue [ch] [speed] [angle]\n");

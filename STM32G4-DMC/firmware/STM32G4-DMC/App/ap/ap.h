@@ -4,7 +4,7 @@
 
 #include "ap_def.h"
 
-
+#include "robot.h"
 
 void apInit(void);
 void apMain(void);

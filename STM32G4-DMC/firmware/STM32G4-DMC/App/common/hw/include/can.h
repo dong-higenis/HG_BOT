@@ -150,9 +150,6 @@ void     canDetachRxInterrupt(uint8_t ch);
 bool     canLock(void);
 bool     canUnLock(void);
 
-void canOpenTestInit(void);
-void canOpenTestTask(void);
-
 #endif
 
 #ifdef __cplusplus

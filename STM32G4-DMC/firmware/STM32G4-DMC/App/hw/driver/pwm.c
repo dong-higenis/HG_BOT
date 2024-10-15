@@ -74,16 +74,16 @@ bool pwmIsInit(void)
 
 void pwmWrite(uint8_t ch, uint16_t pwm_data)
 {
-	int res = 0;
+	//int res = 0;
 
 	if (ch >= PWM_MAX_CH) return;
-	uint32_t temp_buffer[4] = {0,};
+	//uint32_t temp_buffer[4] = {0,};
 
 	pwm_tbl[ch].duty = constrain(pwm_data, 0, pwm_tbl[ch].max_value);
-	temp_buffer[0] = pwm_tbl[ch].duty;
-	temp_buffer[1] = pwm_tbl[ch].duty;
-	temp_buffer[2] = pwm_tbl[ch].duty;
-	temp_buffer[3] = pwm_tbl[ch].duty;
+	//temp_buffer[0] = pwm_tbl[ch].duty;
+	//temp_buffer[1] = pwm_tbl[ch].duty;
+	//temp_buffer[2] = pwm_tbl[ch].duty;
+	//temp_buffer[3] = pwm_tbl[ch].duty;
 	//cliPrintf("[%d]set data = %d\n",ch,(uint32_t)pwm_tbl[ch].duty);
 	cliPrintf("[%d]set data = %d (org pwm_data = %d)(pwm_tbl[ch].max_value = %d)\n",ch,(uint32_t)pwm_tbl[ch].duty,pwm_data, pwm_tbl[ch].max_value);
 	switch(ch)
@@ -93,11 +93,11 @@ void pwmWrite(uint8_t ch, uint16_t pwm_data)
 	//
 	case _DEF_PWM1:
 		htim2.Instance->CCR1 = (uint32_t)pwm_tbl[ch].duty;
-		cliPrintf("htim2.Instance->CCR1 = %d\n",htim2.Instance->CCR1);
+		//cliPrintf("htim2.Instance->CCR1 = %d\n",htim2.Instance->CCR1);
 		break;
 	case _DEF_PWM2:
 		htim3.Instance->CCR2 = (uint32_t)pwm_tbl[ch].duty;
-		cliPrintf("htim3.Instance->CCR2 = %d\n",htim3.Instance->CCR2);
+		//cliPrintf("htim3.Instance->CCR2 = %d\n",htim3.Instance->CCR2);
 		break;
 
 	//
