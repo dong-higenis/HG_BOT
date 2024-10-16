@@ -45,7 +45,7 @@ class CubeWidget(QOpenGLWidget):
         # rotation
         glRotatef(self.raw, 1.0, 0.0, 0.0)   # X axis(raw)
         glRotatef(self.yaw, 0.0, 1.0, 0.0)   # Y axis (yaw)
-        glRotatef(self.pitch, 0.0, 0.0, 1.0) # Z axis (pitch)
+        glRotatef(self.pitch, 0.0, 0.0, -1.0) # Z axis (pitch)
 
         # draw box
         glBegin(GL_QUADS)
