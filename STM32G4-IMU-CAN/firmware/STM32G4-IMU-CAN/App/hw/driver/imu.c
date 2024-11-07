@@ -27,8 +27,8 @@ bool imuInit(void)
   bool ret = true;
 
 
-  imu_info.a_res = 2.0 / 32768.0;    // 2g
-  imu_info.g_res = 2000.0 / 32768.0; // 2000dps
+  imu_info.a_res = 2.0 / 32768.0;    	// 2g
+  imu_info.g_res = 250.0 / 32768.0; 	// 2000dps > 250dps
   update_us      = 1000000 / update_hz;
 
   is_init = imuBegin();

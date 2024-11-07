@@ -48,9 +48,10 @@ void updateCan(void)
 		if(imuGetInfo(&imu_info))
 		{
 			data_count++;
-        	r = (short)imu_info.roll * 1;
-        	p = (short)imu_info.pitch * 1;
-        	y = (short)imu_info.yaw * 1;
+			//	정밀도 증가 위한 데이터 조정
+        	r = (short)(imu_info.roll * 100.0);
+        	p = (short)(imu_info.pitch * 100.0);
+        	y = (short)(imu_info.yaw * 100.0);
 			//cliPrintf("%d\t Roll: %d\t Pitch: %d\t Yaw: %d\n ", data_count, r, p, y);
 				
 			msg.frame   = CAN_CLASSIC;
@@ -60,12 +61,13 @@ void updateCan(void)
 			msg.length  = CAN_DLC_8;
 			msg.data[0] = data_count;
 			msg.data[1] = (buttonGetPressed(0) & 0x0F) | ((dummy << 4) & 0xF0);
-			msg.data[2] = (r >> 16);
+			msg.data[2] = ((r >> 8) & 0xFF);
 			msg.data[3] = (r & 0xFF);
-			msg.data[4] = (p >> 16);
+			msg.data[4] = ((p >> 8) & 0xFF);
 			msg.data[5] = (p & 0xFF);
-			msg.data[6] = (y >> 16);
+			msg.data[6] = ((y >> 8) & 0xFF);
 			msg.data[7] = (y & 0xFF);
+			//cliPrintf("[%2x%2x]Roll:%6d, [%2x%2x]Pitch:%6d\n ", msg.data[2] , msg.data[3], r, msg.data[4] , msg.data[5], p);
 			
 			if (canMsgWrite(_DEF_CAN1, &msg, 10) > 0)
 			{
