@@ -35,19 +35,17 @@ typedef struct
 } button_pin_t;
 
 
-
 #ifdef _USE_HW_CLI
 static void cliButton(cli_args_t *args);
 #endif
+
 static void buttonISR(void *arg);
 static bool buttonGetPin(uint8_t ch);
-
 
 static button_pin_t button_pin[BUTTON_MAX_CH] =
 {
     { HW_GPIO_CH_BTN, "BTN"},  // 0. BTN
 };
-
 
 static button_t button_tbl[BUTTON_MAX_CH];
 static bool is_enable = true;
@@ -56,14 +54,9 @@ static uint8_t event_level = 5;
 static button_event_t *event_tbl[BUTTON_EVENT_MAX];
 
 
-
-
-
-
 bool buttonInit(void)
 {
   bool ret = true;
-
 
   for (int i=0; i<BUTTON_MAX_CH; i++)
   {
@@ -72,7 +65,7 @@ bool buttonInit(void)
     button_tbl[i].released       = 0;
     button_tbl[i].released_event = 0;
 
-    button_tbl[i].repeat_cnt     = 0;
+    button_tbl[i].repeat_cnt         = 0;
     button_tbl[i].repeat_time_detect = 60;
     button_tbl[i].repeat_time_delay  = 250;
     button_tbl[i].repeat_time        = 200;
@@ -107,7 +100,6 @@ bool buttonInit(void)
 bool buttonEventInit(button_event_t *p_event, uint8_t level)
 {
   bool ret = false;
-
 
   for (int i=0; i<BUTTON_EVENT_MAX; i++)
   {
@@ -154,7 +146,6 @@ bool buttonEventRemove(button_event_t *p_event)
 void buttonISR(void *arg)
 {
   uint32_t repeat_time;
-
 
   for (int i=0; i<BUTTON_MAX_CH; i++)
   {
@@ -239,6 +230,8 @@ void buttonISR(void *arg)
     }
   }
 }
+
+bool gpioPinRead(uint8_t ch);
 
 bool buttonGetPin(uint8_t ch)
 {
@@ -499,7 +492,6 @@ void cliButton(cli_args_t *args)
   }
 }
 #endif
-
 
 
 #endif

@@ -91,7 +91,7 @@ void servoSetPos(uint8_t ch, int16_t angle)
 	}
 	servo_info[ch].now_servo_angle = angle;
 	//float temp_servo_duty_per = (5.0 + ((float)angle * 0.0278));	//	1ms~2ms version
-	float temp_servo_duty_per = (2.5 + ((float)(angle + 90)* 0.0555556));	//	0.5ms~2.5ms version
+	float temp_servo_duty_per = (2.5 + ((float)(angle + 90)* 0.0555556));	// 0.5ms~2.5ms version
 	float temp_servo_duty = ( temp_servo_duty_per  / 100.0 ) * 10000.0;
 	servo_info[ch].servo_duty = (uint32_t)temp_servo_duty;
 
@@ -112,7 +112,7 @@ void servoSetPos(uint8_t ch, int16_t angle)
 
 uint32_t calAngleToRegval(int16_t angle)
 {
-	float temp_servo_duty_per = (2.5 + ((float)(angle + 90) * 0.0555556));	//	0.5ms~2.5ms version
+	float temp_servo_duty_per = (2.5 + ((float)(angle + 90) * 0.0555556)); // 0.5ms~2.5ms version
 	float temp_servo_duty = ( temp_servo_duty_per  / 100.0 ) * 10000.0;
 	return (uint32_t)temp_servo_duty;
 }
@@ -194,7 +194,7 @@ void cliServo(cli_args_t *args)
 
 	if (ret == false)
 	{
-    	cliPrintf("servo info\n");
+    cliPrintf("servo info\n");
 		cliPrintf("servo set pos [ch] [angle]\n");
 		cliPrintf("servo get pos [ch]\n");
 		cliPrintf("servo continue [ch] [speed] [angle]\n");

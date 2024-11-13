@@ -2,13 +2,11 @@
 #define HW_DEF_H_
 
 
-
 #include "bsp.h"
 
 
-
-#define _DEF_FIRMWATRE_VERSION    "V240905R1"
-#define _DEF_BOARD_NAME           "STM32G4-ROBOT"
+#define _DEF_FIRMWATRE_VERSION    "V241113R1"
+#define _DEF_BOARD_NAME           "STM32G4-LC"
 
 #define _USE_HW_NEOPIXEL
 #define      HW_NEOPIXEL_MAX_CH     2

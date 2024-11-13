@@ -59,8 +59,12 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define SERVO2_M_Pin GPIO_PIN_0
 #define SERVO2_M_GPIO_Port GPIOA
+#define SERVO1_M_Pin GPIO_PIN_4
+#define SERVO1_M_GPIO_Port GPIOA
 #define NEO2_M_Pin GPIO_PIN_6
 #define NEO2_M_GPIO_Port GPIOA
+#define NEO1_M_Pin GPIO_PIN_7
+#define NEO1_M_GPIO_Port GPIOA
 #define SW_Pin GPIO_PIN_0
 #define SW_GPIO_Port GPIOB
 #define ID0_Pin GPIO_PIN_3

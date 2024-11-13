@@ -5,7 +5,6 @@
 
 typedef struct
 {
-
   uint8_t  Timer_En;             // 타이머 인에이블 신호
   uint8_t  Timer_Mode;           // 타이머 모드
   uint32_t Timer_Ctn;            // 현제의 타이머 값
@@ -15,13 +14,11 @@ typedef struct
 } swtimer_t;
 
 
-
 //-- Internal Variables
 //
 static volatile uint32_t sw_timer_counter      = 0;
 static volatile uint16_t sw_timer_handle_index = 0;
 static swtimer_t  swtimer_tbl[_HW_DEF_SW_TIMER_MAX];           // 타이머 배열 선언
-
 
 
 //-- External Variables
@@ -30,7 +27,6 @@ static swtimer_t  swtimer_tbl[_HW_DEF_SW_TIMER_MAX];           // 타이머 배�
 
 //-- Internal Functions
 //
-
 
 
 //-- External Functions
@@ -67,11 +63,9 @@ void swtimerISR(void)
 {
   uint8_t i;
 
-
   sw_timer_counter++;
 
-
-  for (i=0; i<HW_SWTIMER_MAX_CH && i<sw_timer_handle_index; i++)     // 타이머 갯수만큼
+  for (i=0; i<HW_SWTIMER_MAX_CH && i<sw_timer_handle_index; i++)  // 타이머 갯수만큼
   {
     if ( swtimer_tbl[i].Timer_En == ON)                         // 타이머가 활성화 됬니?
     {
@@ -90,7 +84,6 @@ void swtimerISR(void)
       }
     }
   }
-
 }
 
 void swtimerSet(swtimer_handle_t TmrNum, uint32_t TmrData, uint8_t TmrMode, void (*Fnct)(void *),void *arg)
@@ -112,7 +105,7 @@ void swtimerStart(swtimer_handle_t TmrNum)
   swtimer_tbl[TmrNum].Timer_En  = ON;
 }
 
-void swtimerStop (swtimer_handle_t TmrNum)
+void swtimerStop(swtimer_handle_t TmrNum)
 {
   if(TmrNum < 0) return;
 

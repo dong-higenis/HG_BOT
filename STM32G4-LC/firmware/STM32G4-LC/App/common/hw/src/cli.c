@@ -87,9 +87,7 @@ typedef struct
 } cli_t;
 
 
-
 cli_t   cli_node;
-
 
 
 static bool cliUpdate(cli_t *p_cli, uint8_t rx_data);
@@ -446,7 +444,6 @@ bool cliUpdate(cli_t *p_cli, uint8_t rx_data)
       p_cli->state = CLI_RX_IDLE;
       break;
   }
-
 
 
   cliShowLog(p_cli);

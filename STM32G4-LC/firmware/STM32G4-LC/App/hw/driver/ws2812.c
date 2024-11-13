@@ -10,9 +10,10 @@
 
 #ifdef _USE_HW_NEOPIXEL
 
-//	160MHz Clock > 1.3uS
-//	High	0.7us
-//	Low		0.35us
+// 160MHz Clock
+// Period > 1.3us
+// High	  > 0.7us
+// Low    > 0.35us
 #define BIT_PERIOD      (207)
 #define BIT_HIGH        (127)
 #define BIT_LOW         (71)
@@ -24,7 +25,7 @@ bool is_init = false;
 typedef struct
 {
 	uint16_t led_cnt;
-	uint8_t led_buf[DELAY + 24*HW_NEOPIXEL_MAX_COUNT];
+	uint8_t  led_buf[DELAY + 24*HW_NEOPIXEL_MAX_COUNT];
 } ws2812_t;
 
 
@@ -56,11 +57,18 @@ void ws2812Begin(uint32_t led_cnt)
 	ws2812[0].led_cnt = led_cnt;
 	ws2812[1].led_cnt = led_cnt;
 	//	DMA Start
-	HAL_TIM_PWM_Start_DMA(&htim17, TIM_CHANNEL_1, (uint32_t *)ws2812[0].led_buf, (DELAY + 24 * ws2812[0].led_cnt) * 1);
-	HAL_TIM_PWM_Start_DMA(&htim16, TIM_CHANNEL_1, (uint32_t *)ws2812[1].led_buf, (DELAY + 24 * ws2812[1].led_cnt) * 1);
+	HAL_TIM_PWM_Start_DMA(&htim17,
+	                      TIM_CHANNEL_1,
+	                      (uint32_t *)ws2812[0].led_buf,
+	                      (DELAY + 24 * ws2812[0].led_cnt));
+	HAL_TIM_PWM_Start_DMA(&htim16,
+	                      TIM_CHANNEL_1,
+	                      (uint32_t *)ws2812[1].led_buf,
+	                      (DELAY + 24 * ws2812[1].led_cnt));
 }
 
-void ws2812SetColor(uint32_t ch, uint32_t index, uint8_t red, uint8_t green, uint8_t blue)
+void ws2812SetColor(uint32_t ch, uint32_t index,
+                    uint8_t red, uint8_t green, uint8_t blue)
 {
 	uint8_t r_bit[8];
 	uint8_t g_bit[8];
@@ -104,8 +112,10 @@ void ws2812SetColor(uint32_t ch, uint32_t index, uint8_t red, uint8_t green, uin
 		}
 		blue <<= 1;
 	}
-	//	Xus delay value
+	//	200 us delay value
 	offset = DELAY;
+//	 offset = DELAY * 0.25; // 50 us
+//	 offset = DELAY * 0.125; // 25 us
 
 	memcpy(&ws2812[ch].led_buf[offset + index*24 + 8*0], g_bit, 8*1);
 	memcpy(&ws2812[ch].led_buf[offset + index*24 + 8*1], r_bit, 8*1);
@@ -131,11 +141,11 @@ void cliNeopixel(cli_args_t *args)
 	}
 	if (args->argc == 6 && args->isStr(0, "set") == true)
 	{
-		ch  = (uint8_t)args->getData(1);
+		ch    = (uint8_t)args->getData(1);
 		index = (uint8_t)args->getData(2);
-		r = (uint8_t)args->getData(3);
-		g = (uint8_t)args->getData(4);
-		b = (uint8_t)args->getData(5);
+		r     = (uint8_t)args->getData(3);
+		g     = (uint8_t)args->getData(4);
+		b     = (uint8_t)args->getData(5);
 
 		if(ch < HW_NEOPIXEL_MAX_CH)
 		{		
@@ -149,8 +159,8 @@ void cliNeopixel(cli_args_t *args)
 	}
 	if (ret == false)
 	{
-		cliPrintf("noepixel info\n");    
-		cliPrintf("noepixel set [ch] [index] [red] [gree] [blue]\n");    
+		cliPrintf("neopixel info\n");
+		cliPrintf("neopixel set [ch] [index] [red] [green] [blue]\n");
 	}
 }
 

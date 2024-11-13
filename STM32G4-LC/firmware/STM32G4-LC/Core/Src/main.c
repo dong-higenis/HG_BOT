@@ -53,7 +53,7 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-void mxInit();
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -92,11 +92,11 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_FDCAN1_Init();
-  MX_USART1_UART_Init();
   MX_TIM2_Init();
   MX_TIM3_Init();
   MX_TIM16_Init();
   MX_TIM17_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   hwInit();
   apInit();

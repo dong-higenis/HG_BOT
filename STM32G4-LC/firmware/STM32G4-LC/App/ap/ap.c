@@ -2,14 +2,16 @@
 
 
 void updateCan(void);
+
 const uint32_t can_cmd_list[] = {
 	CAN_ID_LED_SET,
 	CAN_ID_SERVO_SET
 };
-#define MAX_CAN_CMD_LIST (sizeof(can_cmd_list)/sizeof(uint32_t))
+
+#define MAX_CAN_CMD_LIST ( sizeof(can_cmd_list) / sizeof(uint32_t) )
 
 
-void apInit (void)
+void apInit(void)
 {
 	cliOpen(HW_UART_CH_DEBUG, 115200);
 	logBoot(true);
@@ -17,20 +19,19 @@ void apInit (void)
 	ws2812Begin(1);
 	servoBegin();
 	canOpen(_DEF_CAN1, CAN_NORMAL, CAN_CLASSIC, CAN_500K, CAN_500K);
-
 }
 
-void apMain (void)
+void apMain(void)
 {
 	uint32_t pre_time;
 
-	pre_time = millis ();
+	pre_time = millis();
 	while (1)
 	{
-		if (millis () - pre_time >= 500)
+		if (millis() - pre_time >= 500)
 		{
-			pre_time = millis ();
-			ledToggle (_DEF_LED1);
+			pre_time = millis();
+			ledToggle(_DEF_LED1);
 		}
 		updateCan();
 		cliMain();
@@ -38,14 +39,14 @@ void apMain (void)
 }
 
 
-
 void updateCan(void)
 {	
-    static uint8_t data_count = 0;
-    static uint32_t pre_time = 0;
+  static uint8_t data_count = 0;
+  static uint32_t pre_time = 0;
 	uint8_t dummy = 0; //status
 
-    can_msg_t msg;
+  can_msg_t msg;
+
 	if(millis() - pre_time > 100)
 	{
 		pre_time = millis();
@@ -80,30 +81,30 @@ void updateCan(void)
 				cliPrintf("0x%08X, L:%02d, ", msg.id, msg.length);
 				for (int i=0; i<msg.length; i++)
 				{
-					cliPrintf("0x%02X ", msg.data[i]);
+					cliPrintf("0x%02X ", msg.data[i]);  // for debugging
 				}
 				cliPrintf("\n");
 
 				switch(msg.id)
 				{
-				case CAN_ID_LED_SET:
-				{
-					uint8_t ch = msg.data[0];
-					uint8_t idx = msg.data[1];
-					uint8_t r = msg.data[2];
-					uint8_t g = msg.data[3];
-					uint8_t b = msg.data[4];
-					ws2812SetColor(ch, idx, r, g, b);
-				}
+          case CAN_ID_LED_SET:
+          {
+            uint8_t ch  = msg.data[0];
+            uint8_t idx = msg.data[1];
+            uint8_t r = msg.data[2];
+            uint8_t g = msg.data[3];
+            uint8_t b = msg.data[4];
+            ws2812SetColor(ch, idx, r, g, b);
+          }
 					break;
-				case CAN_ID_SERVO_SET:	
-				{
-					uint8_t ch = msg.data[0];
-					int16_t pos = (msg.data[1] << 8) | msg.data[2];
-					//uint16_t speed = (msg.data[3] << 8) | msg.data[4];
-					
-					servoSetPos(ch, pos);
-				}
+          case CAN_ID_SERVO_SET:
+          {
+            uint8_t ch  = msg.data[0];
+            int16_t pos = (msg.data[1] << 8) | msg.data[2];
+            //uint16_t speed = (msg.data[3] << 8) | msg.data[4];
+
+            servoSetPos(ch, pos);
+          }
 					break;
 				}
 			}

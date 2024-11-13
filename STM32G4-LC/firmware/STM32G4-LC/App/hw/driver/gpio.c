@@ -136,9 +136,6 @@ void gpioPinToggle(uint8_t ch)
 }
 
 
-
-
-
 #ifdef _USE_HW_CLI
 void cliGpio(cli_args_t *args)
 {

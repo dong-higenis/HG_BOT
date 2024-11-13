@@ -1,9 +1,6 @@
 #include "qbuffer.h"
 
 
-
-
-
 void qbufferInit(void)
 {
 

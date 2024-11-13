@@ -133,7 +133,7 @@ static void move(uint8_t x, uint8_t y)
 
 
 
-static void addCh_Or_InsCh (uint8_t ch, bool insert)
+static void addCh_Or_InsCh(uint8_t ch, bool insert)
 {
   static uint8_t  charset = 0xff;
   static uint8_t  insert_mode = false;
@@ -179,7 +179,7 @@ static void addCh_Or_InsCh (uint8_t ch, bool insert)
 
 static void addChar(uint8_t ch)
 {
-  addCh_Or_InsCh (ch, false);
+  addCh_Or_InsCh(ch, false);
 }
 
 static void drawBoxLine(uint8_t x, uint8_t y, uint8_t w, uint8_t h, const char *title)

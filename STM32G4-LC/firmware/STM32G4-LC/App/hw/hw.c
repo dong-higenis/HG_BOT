@@ -9,8 +9,7 @@ volatile const firm_ver_t firm_ver __attribute__((section(".version"))) =
   .firm_addr    = 0x08000000
 };
 
-
-
+bool gpioInit(void);
 
 bool hwInit(void)
 {
@@ -18,7 +17,6 @@ bool hwInit(void)
   logInit();
   swtimerInit();
   gpioInit();
-  ledInit();
   buttonInit();
   
   uartInit();
@@ -27,6 +25,7 @@ bool hwInit(void)
   {
     uartOpen(i, 115200);
   }
+
   logOpen(HW_UART_CH_DEBUG, 115200);
   logPrintf("\r\n[ Firmware Begin... ]\r\n");
   logPrintf("Booting..Name \t\t: %s\r\n", _DEF_BOARD_NAME);
@@ -34,17 +33,18 @@ bool hwInit(void)
   logPrintf("Booting..Clock\t\t: %d Mhz\r\n", (int)HAL_RCC_GetSysClockFreq()/1000000);
   logPrintf("\n");
 
-	//framInit();
-	//rtcInit();
-	canInit();
-	//USB Disable
-	//usbInit();
-	//usbBegin(USB_CDC_MODE);
-	//cdcInit();
+  //framInit(); 
+  //rtcInit();
+  canInit();
 
-	//pwmInit();
-	ws2812Init();
-	servoInit();
+  /** USB Disable **/
+  //usbInit();
+  //usbBegin(USB_CDC_MODE);
+  //cdcInit();
+
+  //pwmInit();
+  ws2812Init();
+  servoInit();
 
   return true;
 }
