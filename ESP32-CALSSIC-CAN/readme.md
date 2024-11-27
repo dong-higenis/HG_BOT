@@ -8,4 +8,4 @@
 - High Speed CAN 지원
 - 버튼 x1
 - LED x1
-- 보드 크기: --x--mm
+- 보드 크기: 35x36mm
