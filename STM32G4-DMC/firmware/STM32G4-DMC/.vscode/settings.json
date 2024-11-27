@@ -1,0 +1,52 @@
+{
+  "files.associations": {
+    "hw_def.h": "c",
+    "bsp.h": "c",
+    "stm32g4xx.h": "c",
+    "stm32g4xx_hal.h": "c",
+    "button.h": "c",
+    "pressure.h": "c",
+    "data.h": "c",
+    "cli.h": "c",
+    "gpio.h": "c",
+    "buzzer.h": "c",
+    "setup.h": "c",
+    "resize.h": "c",
+    "motor.h": "c",
+    "encoder.h": "c",
+    "pwm.h": "c",
+    "lcd.h": "c",
+    "swtimer.h": "c",
+    "hwtimer.h": "c",
+    "pid.h": "c",
+    "ssd1306.h": "c",
+    "utils.h": "c",
+    "image_res.h": "c",
+    "ap.h": "c",
+    "ap_def.h": "c",
+    "hw.h": "c",
+    "main.h": "c",
+    "menu.h": "c",
+    "adc.h": "c",
+    "battery.h": "c",
+    "power_on.h": "c",
+    "def.h": "c",
+    "work.h": "c",
+    "nvs.h": "c",
+    "suction.h": "c",
+    "random": "c",
+    "uart.h": "c",
+    "log.h": "c",
+    "qbuffer.h": "c",
+    "sol_valve.h": "c"
+  },
+  
+  "makefile.configurations": [
+    {
+        "name": "build",
+        "makeArgs": ["-j20"],
+    }
+  ],  
+  "makefile.makeDirectory": "Debug",
+  "makefile.compileCommandsPath": "Debug/compile_commands.json"  
+}
