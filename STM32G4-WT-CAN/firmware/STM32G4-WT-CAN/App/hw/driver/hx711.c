@@ -50,10 +50,10 @@ void hx711Init()
   delay(10);
   gpioPinWrite(HW_GPIO_CH_HX711_SCK, false);
   delay(10);  
+
   hx711Value();
   hx711Value();
   hx711Unlock(); 
-
 
 #ifdef _USE_HW_CLI
   cliAdd("hx711", cliHx711);
@@ -89,7 +89,7 @@ int32_t hx711Value()
 {
   uint32_t data = 0;
   uint32_t  startTime = millis();
-  // 이부분 수정 필요 지연이 될 수 있음
+  // 이 부분 수정 필요 지연이 될 수 있음
   while(gpioPinRead(HW_GPIO_CH_HX711_DAT))
   {
     delay(1);
@@ -144,6 +144,7 @@ void hx711Tare(uint16_t sample)
     delay(5);
   }
   hx711.offset = (int32_t)(ave / sample);
+  // hx711ValueAvg(uint16_t sample) 함수 호출해서 offset에 담아도 되지 않나?
   hx711Unlock();
 }
 
@@ -215,6 +216,16 @@ int32_t hx711GetLastValue()
   return hx711.last_raw_data;
 }
 
+void hx711SetOffset(float offset)
+{
+  hx711.offset = offset;  
+}
+
+float hx711GetOffset()
+{
+  return hx711.offset;  
+}
+
 void hx711SetCoef(float coef)
 {
   hx711.coef = coef;  
@@ -249,7 +260,8 @@ static void cliHx711(cli_args_t *args)
   if (args->argc == 1 && args->isStr(0, "info") == true)
   {
     cliPrintf("hx711 \n");
-    cliPrintf("coef %d.%d\n", hx711.coef, hx711.coef/10);
+//    cliPrintf("coef %d.%d\n", hx711.coef, hx711.coef/10);
+    cliPrintf("coef %.1f\n", hx711.coef);
     cliPrintf("offset: %d\n", hx711.offset);
     cliPrintf("status: %s\n", hx711.status==0?"POWER OFF":"POWER ON");
     ret = true;

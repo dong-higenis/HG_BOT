@@ -23,6 +23,7 @@ extern "C" {
 #include "fram.h"
 #include "imu.h"
 #include "hx711.h"
+#include "flash.h"
 
 bool hwInit(void);
 

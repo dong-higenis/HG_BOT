@@ -44,6 +44,8 @@ void        hx711Init();
 int32_t     hx711Value();
 int32_t     hx711ValueAvg(uint16_t sample);
 int32_t     hx711GetLastValue();
+void        hx711SetOffset(float offset);
+float       hx711GetOffset();
 void        hx711SetCoef(float coef);
 float       hx711GetCoef();
 void        hx711Calibration(int32_t value_noload, int32_t value_load, float scale);

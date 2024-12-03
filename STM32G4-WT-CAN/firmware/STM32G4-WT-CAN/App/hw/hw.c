@@ -32,6 +32,7 @@ bool hwInit(void)
   logPrintf("\n");
 
   hx711Init();
+  flashInit();
 
   return true;
 }
