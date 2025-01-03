@@ -17,3 +17,6 @@
 
 5. ESP32-C3-CAN
     - ESP32C3 기반 CAN 통신 모듈
+
+6. ESP32-CLASSIC-CAN
+    - ESP32 기반 CAN 통신 모듈
