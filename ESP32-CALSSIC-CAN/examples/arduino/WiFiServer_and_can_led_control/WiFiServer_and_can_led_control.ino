@@ -18,7 +18,7 @@ const unsigned long debounceDelay = 50;
 const char index_html[] PROGMEM = R"rawliteral(
 <!DOCTYPE HTML><html>
 <head>
-  <title>ESP32-C3-CAN LED Control</title>
+  <title>ESP32-CAN LED Control</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     html { font-family: Arial; display: inline-block; text-align: center; }
@@ -64,7 +64,7 @@ const char index_html[] PROGMEM = R"rawliteral(
   </script>
 </head>
 <body>
-  <h2>ESP32-C3-CAN LED Control</h2>
+  <h2>ESP32-CAN LED Control</h2>
   <p id="ledState">LED is %LED_STATE%</p>
   <button id="toggleButton" onclick="toggleLED()" class="button button-%BUTTON_CLASS%">
     Turn %BUTTON_ACTION%
